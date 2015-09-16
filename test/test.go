@@ -1,9 +1,10 @@
 package main
 import (
 	"fmt"
-	"math/rand"
+	
 )
 
 func main() {
-	fmt.Println("my favorite number is", rand.Intn(10))
+	fmt.Println(len("hello,world"))
+	fmt.Println(len([]rune("hello,world")))
 }
