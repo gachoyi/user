@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	fmt.Println(len("hello,world"))
-	fmt.Println(len([]rune("hello,world")))
+	fmt.Println(len("hello,世界"))
+	fmt.Println(len([]rune("hello,世界")))
 }

@@ -19,7 +19,7 @@ func main() {
 	for k,v :=range kvs {
 		fmt.Println("%s->%s",k,v)
 	}
-	for i,c :=range "et" {
-		fmt.Println(i,c)
+	for i,c :=range "中国" {
+		fmt.Println(i,string(c))
 	}
 }
