@@ -47,8 +47,28 @@ func enqueue(uri string, queue chan string) {
 	defer resp.Body.Close()              //defer等上面的client.Get执行完毕后关闭连接
 	links :=collectlinks.All(resp.Body)           //links是一个包含了二级超链接的slice
 	for _,link := range links {
-		go func() {queue<-link}()      //二级超链接下可能还有下级链接，所以放到queue中继续执行enqueue。
+		absolute:=fixUrl(link,uri)
+		if uri != "" {
+			go func() {queue<-absolute}()      //二级超链接下可能还有下级链接，所以放到queue中继续执行enqueue。
+		}
+		
 	}
+	
+}
+
+func fixUrl(href,base string) (string) {
+	uri,err:= url.Parse(href)  //用url.Parse()将rawurl转换为URL structure
+	//rawurl是domain后面的一部分URL，URL “http://www.xyz.com/articles/recent.aspx”的rawurl部分是“/articles/recent.aspx”
+	if err!=nil{
+		return ""
+	}
+	baseUrl,err := url.Parse(base)
+	if err != nil {
+		return ""
+	}
+	uri = baseUrl.ResolveReference(uri)  //ResolveReference根据一个baseUrl解析出相对url（uri）的绝对地址。
+	                                    //如果uri已经是一个绝对地址就不做任何修改，直接返回这个地址
+	return uri.String()
 }
 
 
