@@ -9,6 +9,8 @@ import (
 	"github.com/JackDanger/collectlinks"
 )
 
+var visited = make(map[string]bool)     //visited这个dictionary用于存储url->bool对。 bool用于表示是否已经访问过。
+
 
 func main() {
 	flag.Parse()                                                   //parse命令后面的参数到slice。
@@ -33,6 +35,7 @@ func main() {
 
 func enqueue(uri string, queue chan string) {
 	fmt.Println("fetching",uri)
+	visited[uri] = true      //将要访问的uri放进visited，并赋值为true
 	tlsConfig := &tls.Config{                             //&的意思：生成一个tls.Config对象，其InsecureSkipVerify值设为true
 		InsecureSkipVerify: true,
 	}
@@ -49,7 +52,9 @@ func enqueue(uri string, queue chan string) {
 	for _,link := range links {
 		absolute:=fixUrl(link,uri)
 		if uri != "" {
-			go func() {queue<-absolute}()      //二级超链接下可能还有下级链接，所以放到queue中继续执行enqueue。
+			if !visited[absolute] {  //如果absolute在visited里不为true，就将absolute放进queue channle
+				go func() {queue<-absolute}()   
+			}   //二级超链接下可能还有下级链接，所以放到queue中继续执行enqueue。
 		}
 		
 	}
