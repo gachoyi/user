@@ -9,7 +9,7 @@ func worker(done chan bool) {
 	fmt.Print("working....")
 	time.Sleep(time.Second)
 	fmt.Println("end")
-	done<-true
+	//done<-true
 }
 
 func main() {
